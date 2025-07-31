@@ -1,0 +1,6 @@
+{
+  "name": "AI Email Reply Assistant",
+  "description": "An AI-powered agent that analyzes incoming emails and drafts professional, context-aware replies automatically. Paste an email, select a tone, and let the AI generate a polished response for you.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
