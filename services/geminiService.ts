@@ -2,18 +2,18 @@
 import { GoogleGenAI } from "@google/genai";
 import { Tone } from "../types";
 
-const apiKey = process.env.API_KEY;
-if (!apiKey) {
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY;
+if (!geminiApiKey) {
     // This will be caught by the environment, but it's good practice
     // to have a check for development or debugging purposes.
-    console.error("API_KEY environment variable not set");
+    console.error("VITE_GEMINI_API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+const ai = new GoogleGenAI({ apiKey: geminiApiKey || '' });
 
 export const generateReply = async (emailContent: string, tone: Tone): Promise<string> => {
-    if (!apiKey) {
-        return "Error: API_KEY is not configured. Please ensure the API key is set in the environment variables.";
+    if (!geminiApiKey) {
+        return "Error: VITE_GEMINI_API_KEY is not configured. Please ensure the API key is set in the environment variables.";
     }
     
     if (!emailContent.trim()) {
