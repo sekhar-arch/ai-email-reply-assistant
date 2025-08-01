@@ -1,5 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { generateReply } from './services/geminiService';
 import { Tone } from './types';
 import ToneSelector from './components/ToneSelector';
@@ -13,6 +15,8 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [isCopied, setIsCopied] = useState<boolean>(false);
+    const [editor, setEditor] = useState<any>(null);
+    const [selectionFormat, setSelectionFormat] = useState<string>('Normal');
 
     const handleGenerateReply = useCallback(async () => {
         if (!incomingEmail.trim()) {
@@ -63,13 +67,41 @@ const App: React.FC = () => {
                            <label htmlFor="incoming-email" className="block text-lg font-semibold text-white mb-3">
                                 Incoming Email
                             </label>
-                            <textarea
-                                id="incoming-email"
-                                value={incomingEmail}
-                                onChange={(e) => setIncomingEmail(e.target.value)}
-                                placeholder="Paste the content of the email you received here..."
-                                className="w-full h-64 bg-slate-900/70 border border-slate-700 rounded-md p-4 text-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 resize-y"
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={incomingEmail}
+                                onReady={editor => {
+                                    setEditor(editor);
+                                    editor.model.document.selection.on('change:range', () => {
+                                        const selection = editor.model.document.selection;
+                                        const selectedText = selection.getFirstRange()?.start.parent;
+                                        if (selectedText) {
+                                            if (selectedText.name === 'paragraph') {
+                                                setSelectionFormat('Normal');
+                                            } else {
+                                                setSelectionFormat(selectedText.name);
+                                            }
+                                        }
+                                    });
+                                }}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setIncomingEmail(data);
+                                }}
+                                config={{
+                                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                                    placeholder: "Paste the content of the email you received here...",
+                                }}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label className="block text-sm font-medium text-slate-300">
+                                Selected Text Format
+                            </label>
+                            <div className="w-full bg-slate-900/70 border border-slate-700 rounded-md p-2 text-slate-300">
+                                {selectionFormat}
+                            </div>
                         </div>
                         
                         <ToneSelector selectedTone={selectedTone} onSelectTone={setSelectedTone} />

@@ -1,0 +1,22 @@
+.ck-editor__editable_inline {
+    min-height: 200px;
+    background-color: #1e293b !important;
+    color: #cbd5e1 !important;
+    border-color: #334155 !important;
+}
+
+.ck-toolbar {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+.ck.ck-button,
+.ck.ck-button:hover {
+    color: #cbd5e1 !important;
+    background: transparent !important;
+}
+
+.ck.ck-button.ck-on,
+.ck.ck-button.ck-on:hover {
+    background: #334155 !important;
+}
